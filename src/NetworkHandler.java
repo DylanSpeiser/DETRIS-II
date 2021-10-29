@@ -5,8 +5,8 @@ import java.util.Collections;
 
 public class NetworkHandler {
 	private static String database = "jdbc:mysql://detris-database.cd6abzr0usev.us-east-1.rds.amazonaws.com/detris";
-	private static String user = "Dylan";
-	private static String password = "ILoveJava!";
+	private static String user = "DETRIS";
+	private static String password = "DetrisUserPassword";
 	
 	private static int nextID = 0;
 	
