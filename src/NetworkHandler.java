@@ -25,9 +25,17 @@ public class NetworkHandler {
 			return;
 		try {
 			con = DriverManager.getConnection(database,user,password);
+			
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT MAX(id) FROM detris.highscores;");
+			while (rs.next()) {
+				nextID = rs.getInt(1)+1;
+			}
+			
 			String valueParentheses = "("+nextID+",\""+s.name+"\","+s.score+")";
 			PreparedStatement ps = con.prepareStatement("INSERT INTO detris.highscores (id,name,score) VALUES "+valueParentheses+";");
 			ps.executeUpdate();
+
 			nextID++;
 			con.close();
 		} catch (SQLException e) {
@@ -44,16 +52,39 @@ public class NetworkHandler {
 		try {
 			con = DriverManager.getConnection(database,user,password);
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from highscores");
+			ResultSet rs = stmt.executeQuery("select * from highscores;");
 			while (rs.next()) {
 				scores.add(new Score(rs.getString(2),rs.getInt(3)));
-				nextID = Math.max(rs.getInt(1)+1, nextID);
 			}
+			
+			stmt = con.createStatement();
+			rs = stmt.executeQuery("SELECT MAX(id) FROM detris.highscores;");
+			while (rs.next()) {
+				nextID = rs.getInt(1)+1;
+			}
+			
 			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		Collections.sort(scores);
 		return scores;
+	}
+	
+	/**
+	 * Updates nextID
+	 */
+	public static void updateNextID() {
+		try {
+			con = DriverManager.getConnection(database,user,password);
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("SELECT MAX(id) FROM detris.highscores;");
+			while (rs.next()) {
+				nextID = rs.getInt(1)+1;
+			}
+			con.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
