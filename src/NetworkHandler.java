@@ -15,7 +15,6 @@ public class NetworkHandler {
 	static {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection(database,user,password);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -25,10 +24,12 @@ public class NetworkHandler {
 		if (s.equals(new Score("",0)))
 			return;
 		try {
+			con = DriverManager.getConnection(database,user,password);
 			String valueParentheses = "("+nextID+",\""+s.name+"\","+s.score+")";
 			PreparedStatement ps = con.prepareStatement("INSERT INTO detris.highscores (id,name,score) VALUES "+valueParentheses+";");
 			ps.executeUpdate();
 			nextID++;
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -41,12 +42,14 @@ public class NetworkHandler {
 	public static ArrayList<Score> getScores() {
 		ArrayList<Score> scores = new ArrayList<Score>();
 		try {
+			con = DriverManager.getConnection(database,user,password);
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select * from highscores");
 			while (rs.next()) {
 				scores.add(new Score(rs.getString(2),rs.getInt(3)));
 				nextID = Math.max(rs.getInt(1)+1, nextID);
 			}
+			con.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
