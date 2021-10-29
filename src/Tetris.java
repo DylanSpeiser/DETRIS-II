@@ -208,6 +208,8 @@ public class Tetris extends JFrame implements ActionListener, KeyListener, Mouse
 		} else if (gameState == 1) {
 			if (arg0.getKeyCode() == KeyEvent.VK_DELETE || arg0.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
 				selectedNameChar--;
+				if (selectedNameChar<0)
+					selectedNameChar = 0;
 				name = name.substring(0, selectedNameChar) + "_" + name.substring(selectedNameChar + 1);
 			}
 			if (arg0.getKeyCode() == KeyEvent.VK_ENTER) {
