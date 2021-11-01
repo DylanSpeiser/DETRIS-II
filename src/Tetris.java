@@ -262,12 +262,22 @@ public class Tetris extends JFrame implements ActionListener, KeyListener, Mouse
 				ghost.update();
 				instantDropEnabled = false;
 			} else if (heldTetromino != 0 && arg0.getKeyCode() == KeyEvent.VK_SHIFT) {
+				int oldTetrominoHeight = 0;
+				for (Piece p : activeTetromino.pieces) {
+					if (oldTetrominoHeight < p.index.y) {
+						oldTetrominoHeight = (int) p.index.y;
+					}
+				}
 				typeSelector = heldTetromino;
 				heldTetromino = activeTetromino.type;
 				activeTetromino = new Tetromino(typeSelector);
 				ghost = new Ghost(typeSelector);
 				ghost.update();
 				instantDropEnabled = false;
+				while (oldTetrominoHeight > 1 && !activeTetromino.moveDown(1)) {
+					activeTetromino.moveDown(0);
+					oldTetrominoHeight--;
+				}
 			}
 
 			ghost.update();
@@ -1019,9 +1029,9 @@ public class Tetris extends JFrame implements ActionListener, KeyListener, Mouse
 
 		public boolean isValid() {
 			for (Piece p : pieces) {
-				if (p.index.x < 1 || p.index.x > 11)
+				if (p.index.x < 1 || p.index.x > 10)
 					return false;
-				if (p.index.y < 1 || p.index.x > 21)
+				if (p.index.y < 1 || p.index.y > 20)
 					return false;
 				if (board[(int) p.index.y][(int) p.index.x] != 0)
 					return false;
